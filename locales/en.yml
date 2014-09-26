@@ -1,0 +1,5 @@
+en:
+  lita:
+    handlers:
+      env:
+      	environment: "We have got %{name} added by %{user}"
