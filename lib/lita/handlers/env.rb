@@ -2,37 +2,85 @@ module Lita
   module Handlers
     class Env < Handler
 
-    	route /env\s+add, :add_env, command: true, help: {
-    		"env add" => t("add a new environment")
+    	route /env\s+add\s+(.+)/i, :add, command: true, help: {
+    		t("help.add_key") => t("help.add_value")
     	}
 
-    	route /env\s+list, :list_env, command: true, help: {
-    		"env list" => t("shows status of current environments")
-    	}
+      route /env\s+update\s+(.+)/i, :update, command: true, help: {
+        t("help.update_key") => t("help.update_value")
+      }
 
-    	def add_env(response)
-    		redis.sadd("env:#{response.user.id}", response.matches[0][0])
-    		redis.sadd("env", response.user.id)
-    		response.reply(t("added environment", type: env))
-    	end
+      route /env\s+remove\s+(.+)/i, :remove, command: true, help: {
+        t("help.remove_key") => t("help.remove_value")
+      }
 
-    	def list_env(response)
-    		user_ids = redis.smembers("env")
-    		return if user_ids.empty?
+      route /env\s+list/i, :list, command: true, help: {
+        t("help.list_key") => t("help.list_value")
+      }
 
-    		environments = []
+      route /env\s+clear/i, :clear, command: true, help: {
+        t("help.clear_key") => t("help.clear_value")
+      }
 
-    		user_ids.each do |user_id|
-    			user = User.find_by_id(user_id)
-    			next unless user
+      route /env\s+target-opsman/i, :target, command: true, help: {
+        t("help.target_key") => t("help.target_value")
+      }
 
-    			redis.smembers("env:#{user.id}").each do |details|
-    				environments << t("environment", name: details, user: user.name)
-    			end
-    		end
+      route /env\s+target-cf\s+(.+)/i, :target, command: true, help: {
+        t("help.target_key") => t("help.target_value")
+      }
 
-    		environments.join("\n")
-    	end
+      def add(response)
+        value = response.matches[0][0]
+
+        response.reply(t("added", name: value))
+      end
+
+      def update(response)
+        response.reply(t("updated", name: response.matches[0][0]))
+      end
+
+      def remove(response)
+        response.reply(t("removed", name: response.matches[0][0]))
+      end
+
+      def list
+      end
+
+      def clear
+      end
+
+      def target(response)
+        puts response.matches.inspect
+        # puts response.matches[0][0]
+        # puts response.matches[1][0]
+        # value = response.matches[0][0].chomp.split('-')
+        # response.reply(value[1])
+      end
+
+    	# def add(response)
+    	# 	redis.sadd("env:#{response.user.id}", response.matches[0][0])
+    	# 	redis.sadd("env", response.user.id)
+    	# 	response.reply(t("added environment", type: env))
+    	# end
+
+    	# def list(response)
+    	# 	user_ids = redis.smembers("env")
+    	# 	return if user_ids.empty?
+
+    	# 	environments = []
+
+    	# 	user_ids.each do |user_id|
+    	# 		user = User.find_by_id(user_id)
+    	# 		next unless user
+
+    	# 		redis.smembers("env:#{user.id}").each do |details|
+    	# 			environments << t("environment", name: details, user: user.name)
+    	# 		end
+    	# 	end
+
+    	# 	environments.join("\n")
+    	# end
     end
 
     Lita.register_handler(Env)

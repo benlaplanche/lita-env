@@ -1,5 +1,20 @@
 en:
   lita:
     handlers:
+      help:
+        add_key: "env add ENVIRONMENT_NAME"
+        add_value: "Add a new environment to the list"
+        update_key: "env update ENVIRONMENT_NAME"
+        update_value: "Update the details of an existing environment"
+        remove_key: "env remove ENVIRONMENT_NAME"
+        remove_value: "Remove an existing environment from the list"
+        list_key: "env list"
+        list_value: "List the details of all of the environments"
+        clear_key: "env clear"
+        clear_value: "Clear the list of all the environments"
+        target_key: "env target VALUE"
+        target_value: "Set the target value for 'opsman' or 'cf' "
       env:
-      	environment: "We have got %{name} added by %{user}"
+        added: "Added environment %{name}"
+        updated: "Updated environment details for %{name}"
+        removed: "Removed environment %{name}"
