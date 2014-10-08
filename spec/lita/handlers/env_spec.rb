@@ -1,9 +1,6 @@
 require "spec_helper"
 require "redis"
 describe Lita::Handlers::Env, lita_handler: true do
-	before(:all) do
-		@redis = Redis.new
-	end
 
 	let(:user) {Lita::User.create(2, name:"Test User")}
 	let(:environment) { "grape"}
@@ -20,7 +17,7 @@ describe Lita::Handlers::Env, lita_handler: true do
 	it { routes_command("env target-cf #{cf_target}").to(:target)}
 
   it "has access to redis" do
-    expect(@redis).to_not be_nil
+    expect(Environment.redis).to_not be_nil
   end
 
 	it "adds new enviroment" do
@@ -57,12 +54,11 @@ describe Lita::Handlers::Env, lita_handler: true do
 			expect(replies.last).to eq("Config for target-opsman target value set to 1.3")
 		end
 
-		# it "and updates Redis" do
-		# 	send_command("env target-opsman 1.3")
-		# 	# @redis.set("target-opsman", 1.3)
-		# 	answer = @redis.get("target-opsman")
-		# 	expect(answer).to eq("1.3")
-		# end
+		it "and updates Redis" do
+			send_command("env target-opsman 1.3")
+			expect(Environment.read("target-opsman")).to eq("1.3")
+		end
+
 	end
 
 	describe "updates CloudFoundry target" do
@@ -72,7 +68,9 @@ describe Lita::Handlers::Env, lita_handler: true do
 			expect(replies.last).to eq("Config for target-cf target value set to 1.3")
 		end
 
-		# it "and updates Redis" do
-		# end
+		it "and updates Redis" do
+			send_command("env target-cf 1.3")
+			expect(Environment.read("target-cf")).to eq("1.3")
+		end
 	end
 end

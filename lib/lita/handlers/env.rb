@@ -54,7 +54,7 @@ module Lita
         key = response.args[0]
         value = response.args[1]
 
-        redis.set(key,value)
+        Environment.create(key,value)
         response.reply(t("set_target", key: key, value: value))
       end
 
