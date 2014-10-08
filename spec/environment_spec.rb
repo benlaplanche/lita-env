@@ -25,11 +25,26 @@ describe Environment, lita: true do
 	end
 
 	describe '#read' do
+		it "returns the environment status" do
+			expect(subject.read('grape')).to eq('blah')
+		end
 	end
 
 	describe '#destroy' do
+		it "creates and destroys a value" do
+			subject.create('fruity', 'blah')
+			subject.destroy('fruity')
+			expect(subject.read('fruity')).to be_nil
+		end
 	end
 
 	describe '#exists' do
+		it "returns true if the environment does exists" do
+			expect(subject.exists?('grape')).to be true
+		end
+
+		it "returns flase if the environment doesnt exist" do
+			expect(subject.exists?('orange')).to be false
+		end
 	end
 end
