@@ -1,6 +1,10 @@
 require "spec_helper"
-
+require "redis"
 describe Lita::Handlers::Env, lita_handler: true do
+	before(:all) do
+		@redis = Redis.new
+	end
+
 	let(:user) {Lita::User.create(2, name:"Test User")}
 	let(:environment) { "grape"}
 	let(:missing_environment) { "apple" }
@@ -14,6 +18,10 @@ describe Lita::Handlers::Env, lita_handler: true do
 	it { routes_command("env clear").to(:clear) }
 	it { routes_command("env target-opsman #{opsman_target}").to(:target) }
 	it { routes_command("env target-cf #{cf_target}").to(:target)}
+
+  it "has access to redis" do
+    expect(@redis).to_not be_nil
+  end
 
 	it "adds new enviroment" do
 		send_command("env add #{environment}")
@@ -42,14 +50,29 @@ describe Lita::Handlers::Env, lita_handler: true do
 	it "clears all environments" do
 	end
 
-	it "updates OpsManager target" do
-		send_command("env target-opsman 1.3")
-		expect(replies.last).to eq("opsman")
+	describe "updates OpsManager target" do
+
+		it "and shows the correct message" do
+			send_command("env target-opsman 1.3")
+			expect(replies.last).to eq("Config for target-opsman target value set to 1.3")
+		end
+
+		# it "and updates Redis" do
+		# 	send_command("env target-opsman 1.3")
+		# 	# @redis.set("target-opsman", 1.3)
+		# 	answer = @redis.get("target-opsman")
+		# 	expect(answer).to eq("1.3")
+		# end
 	end
 
-	it "updates CloudFoundry target" do
-		send_command("env target-cf 1.3")
-		expect(replies.last).to eq("cf")
-	end
+	describe "updates CloudFoundry target" do
 
+		it "and shows the correct message" do
+			send_command("env target-cf 1.3")
+			expect(replies.last).to eq("Config for target-cf target value set to 1.3")
+		end
+
+		# it "and updates Redis" do
+		# end
+	end
 end

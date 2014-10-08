@@ -51,11 +51,11 @@ module Lita
       end
 
       def target(response)
-        puts response.matches.inspect
-        # puts response.matches[0][0]
-        # puts response.matches[1][0]
-        # value = response.matches[0][0].chomp.split('-')
-        # response.reply(value[1])
+        key = response.args[0]
+        value = response.args[1]
+
+        redis.set(key,value)
+        response.reply(t("set_target", key: key, value: value))
       end
 
     	# def add(response)
