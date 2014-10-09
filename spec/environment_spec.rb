@@ -18,7 +18,12 @@ describe Environment, lita: true do
 	end
 
 	describe '#create' do
-		it "sets the key as the environment name and value as environment properties" do
+		it "sets the environment key" do
+			subject.create('apple', '1.3')
+			expect(subject.read('apple')).to eq('1.3')
+		end
+
+		it "sets the options key" do
 			subject.create('target-cf', '1.3')
 			expect(subject.read('target-cf')).to eq('1.3')
 		end

@@ -31,9 +31,10 @@ module Lita
       }
 
       def add(response)
-        value = response.matches[0][0]
-
-        response.reply(t("added", name: value))
+        key = response.matches[0][0]
+        
+        Environment.create(key,"")
+        response.reply(t("added", name: key))
       end
 
       def update(response)
