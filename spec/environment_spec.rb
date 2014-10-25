@@ -7,7 +7,7 @@ describe Environment, lita: true do
 
 	after {
 		subject.all.each do |data|
-			Environment.destroy(data)
+			Environment.remove(data)
 		end
 	}
 
@@ -35,10 +35,10 @@ describe Environment, lita: true do
 		end
 	end
 
-	describe '#destroy' do
+	describe '#remove' do
 		it "creates and destroys a value" do
 			subject.create('fruity', 'blah')
-			subject.destroy('fruity')
+			subject.remove('fruity')
 			expect(subject.read('fruity')).to be_nil
 		end
 	end

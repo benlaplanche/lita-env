@@ -18,36 +18,50 @@ describe Lita::Handlers::Env, lita_handler: true do
 	it { routes_command("env target-opsman #{opsman_target}").to(:target) }
 	it { routes_command("env target-cf #{cf_target}").to(:target)}
 
+	before(:each) do
+		send_command("env add #{environment} #{opsman_data} #{cf_data}")
+	end
+
   it "has access to redis" do
     expect(Environment.redis).to_not be_nil
   end
 
-  context "when adding a  new environment" do
-		before(:each) do
-			send_command("env add #{environment} #{opsman_data} #{cf_data}")
-		end
-
-		it "it should return the correct message" do
+  context "when adding a  new environment it" do
+		it "should return the correct message" do
 			expect(replies.last).to eq("Added environment #{environment}")
 		end
 
-		it "it should store the correct json value" do
+		it "should store the correct json value" do
 			value = Environment.read(environment)
 			expect(value).to eq("{\"opsman\":\"1.3\",\"cf\":\"1.3\"}")
 		end
 	end
 
-	it "updates existing environment" do
-		send_command("env update #{environment}")
-		expect(replies.last).to eq("Updated environment details for #{environment}")
+	context "when updating an existing environment" do
+		it "updates existing environment" do
+			send_command("env update #{environment}")
+			expect(replies.last).to eq("Updated environment details for #{environment}")
+		end
 	end
 
-	it "updates a missing environment" do
+	context "when updating a non-existent environment" do
+		it "should give an error message" do
+		end
 	end
 
-	it "removes an existing environment" do
-		send_command("env remove #{environment}")
-		expect(replies.last).to eq("Removed environment #{environment}")
+	context "when removing an existing environment it" do
+		before(:each) do
+			send_command("env remove #{environment}")
+		end
+
+		it "should return the correct message" do
+			expect(replies.last).to eq("Removed environment #{environment}")
+		end
+
+		it "should not exist in Redis" do
+			value = Environment.read(environment)
+			expect(value).to be_nil
+		end
 	end
 
 	it "removes a missing environment" do

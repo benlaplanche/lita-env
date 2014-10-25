@@ -17,7 +17,7 @@ class Environment
 			redis.hget(REDIS_KEY, key)
 		end
 
-		def destroy(key)
+		def remove(key)
 			redis.hdel(REDIS_KEY, key)
 		end
 

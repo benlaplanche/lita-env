@@ -51,7 +51,9 @@ module Lita
       end
 
       def remove(response)
-        response.reply(t("removed", name: response.matches[0][0]))
+        key = response.matches[0][0]
+        Environment.remove(key)
+        response.reply(t("removed", name: key))
       end
 
       def list
@@ -66,9 +68,6 @@ module Lita
 
         Environment.create(key,value)
         response.reply(t("set_target", key: key, value: value))
-      end
-
-      def serialize_args(args)
       end
 
       def format_values_json(value)
