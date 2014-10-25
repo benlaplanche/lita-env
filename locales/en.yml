@@ -19,3 +19,4 @@ en:
         updated: "Updated environment details for %{name}"
         removed: "Removed environment %{name}"
         set_target: "Config for %{key} target value set to %{value}"
+        does_not_exist: "Environment %{name} does not exist"

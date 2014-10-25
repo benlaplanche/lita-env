@@ -64,7 +64,14 @@ describe Lita::Handlers::Env, lita_handler: true do
 		end
 	end
 
-	it "removes a missing environment" do
+	context "when removing a non-existent environment it" do
+		before(:each) do
+			send_command("env remove #{missing_environment}")
+		end
+
+		it "should return the correct message" do
+			expect(replies.last).to eq("Environment #{missing_environment} does not exist")
+		end
 	end
 
 	it "lists all environments" do

@@ -52,8 +52,12 @@ module Lita
 
       def remove(response)
         key = response.matches[0][0]
-        Environment.remove(key)
-        response.reply(t("removed", name: key))
+        if Environment.exists?(key)
+          Environment.remove(key)
+          response.reply(t("removed", name: key))
+        else
+          response.reply(t("does_not_exist", name: key))
+        end
       end
 
       def list
