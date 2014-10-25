@@ -7,6 +7,8 @@ describe Lita::Handlers::Env, lita_handler: true do
 	let(:missing_environment) { "apple" }
 	let(:opsman_target) { "1.3" }
 	let(:cf_target) { "1.3" }
+	let(:opsman_data) { "opsman:1.3" }
+	let(:cf_data) { "cf:1.3" }
 
 	it { routes_command("env add #{environment}").to(:add) }
 	it { routes_command("env update #{environment}").to(:update) }
@@ -20,9 +22,19 @@ describe Lita::Handlers::Env, lita_handler: true do
     expect(Environment.redis).to_not be_nil
   end
 
-	it "adds new enviroment" do
-		send_command("env add #{environment}")
-		expect(replies.last).to eq("Added environment #{environment}")
+  context "when adding a  new environment" do
+		before(:each) do
+			send_command("env add #{environment} #{opsman_data} #{cf_data}")
+		end
+
+		it "it should return the correct message" do
+			expect(replies.last).to eq("Added environment #{environment}")
+		end
+
+		it "it should store the correct json value" do
+			value = Environment.read(environment)
+			expect(value).to eq("{\"opsman\":\"1.3\",\"cf\":\"1.3\"}")
+		end
 	end
 
 	it "updates existing environment" do

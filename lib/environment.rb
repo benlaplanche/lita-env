@@ -9,7 +9,7 @@ class Environment
 		end
 
 		def create(key,value)
-			return false if self.exists?(key)
+			# return false if self.exists?(key)
 			redis.hset(REDIS_KEY,key,value)
 		end
 
