@@ -21,6 +21,10 @@ class Environment
 			redis.hdel(REDIS_KEY, key)
 		end
 
+		def destroy
+			redis.flushall
+		end
+
 		def exists?(key)
 			redis.hexists(REDIS_KEY, key)
 		end

@@ -43,6 +43,14 @@ describe Environment, lita: true do
 		end
 	end
 
+	describe '#destroy' do
+		it "removes all keys" do
+			subject.create('fruity', 'blah')
+			subject.destroy
+			expect(subject.read('fruity')).to be_nil
+		end
+	end
+
 	describe '#exists' do
 		it "returns true if the environment does exists" do
 			expect(subject.exists?('grape')).to be true

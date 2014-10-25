@@ -29,6 +29,11 @@ module Lita
         t("help.clear_key") => t("help.clear_value")
       }
 
+      # env please clear
+      route /env\s+please.clear/i, :please_clear, command: true, help: {
+        t("help.please_clear_key") => t("help.please_clear_value")
+      }
+
       # env target-opsman 1.3
       route /env\s+target-opsman/i, :target, command: true, help: {
         t("help.target_key") => t("help.target_value")
@@ -63,7 +68,13 @@ module Lita
       def list
       end
 
-      def clear
+      def clear(response)
+        response.reply(t("clear", command: t("clear_key")))
+      end
+
+      def please_clear(response)
+        Environment.destroy
+        response.reply(t("cleared"))
       end
 
       def target(response)

@@ -74,7 +74,35 @@ describe Lita::Handlers::Env, lita_handler: true do
 		end
 	end
 
-	it "lists all environments" do
+	context "when listing all environments it" do
+	end
+
+	context "when clearing all environments" do
+		context "which is not confirmed" do
+			before(:each) do
+				send_command("env clear")
+			end
+
+			it "should ask for confirmation" do
+				expect(replies.last).to eq("To confirm you really want to clear all environments type 'env please clear'")
+			end
+		end
+
+		context "which is confirmed" do
+			before(:each) do
+				send_command("env please clear")
+			end
+
+			it "should return the correct message" do
+				expect(replies.last).to eq("Successfully removed all environments")
+			end
+
+			it "should remove all environments from Redis" do
+				keys = Environment.all
+				expect(keys).to be_empty
+			end
+
+		end
 	end
 
 	it "clears all environments" do
