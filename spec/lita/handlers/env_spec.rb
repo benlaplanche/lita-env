@@ -38,10 +38,30 @@ describe Lita::Handlers::Env, lita_handler: true do
 	end
 
 	context "when updating an existing environment" do
-		it "updates existing environment" do
-			send_command("env update #{environment}")
-			expect(replies.last).to eq("Updated environment details for #{environment}")
+
+		context "where all arguments are passed"
+			before(:each) do
+				send_command("env update grape opsman:1.4")
+			end
+
+			it "should return the correct message" do
+				send_command("env update #{environment}")
+				expect(replies.last).to eq("Updated environment details for #{environment}")
+			end
+
+			it "should store the correct json value" do
+			end
 		end
+
+		context "where only one existing argument is passed" do
+		end
+
+		context "where only one existing argument is passed, with one new argument" do
+		end
+
+		context "where no existing arguments are passed" do
+		end
+
 	end
 
 	context "when updating a non-existent environment" do
@@ -103,9 +123,6 @@ describe Lita::Handlers::Env, lita_handler: true do
 			end
 
 		end
-	end
-
-	it "clears all environments" do
 	end
 
 	describe "updates OpsManager target" do
