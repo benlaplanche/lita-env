@@ -15,6 +15,7 @@ describe Lita::Handlers::Env, lita_handler: true do
 	it { routes_command("env remove #{environment}").to(:remove) }
 	it { routes_command("env list").to(:list) }
 	it { routes_command("env clear").to(:clear) }
+	it { routes_command("env please clear").to(:please_clear) }
 	it { routes_command("env target-opsman #{opsman_target}").to(:target) }
 	it { routes_command("env target-cf #{cf_target}").to(:target)}
 
@@ -26,7 +27,7 @@ describe Lita::Handlers::Env, lita_handler: true do
     expect(Environment.redis).to_not be_nil
   end
 
-  context "when adding a  new environment it" do
+  context "when adding a new environment it" do
 		it "should return the correct message" do
 			expect(replies.last).to eq("Added environment #{environment}")
 		end
@@ -39,7 +40,7 @@ describe Lita::Handlers::Env, lita_handler: true do
 
 	context "when updating an existing environment" do
 
-		context "where all arguments are passed"
+		context "where all arguments are passed" do
 			before(:each) do
 				send_command("env update grape opsman:1.4")
 			end
@@ -65,7 +66,12 @@ describe Lita::Handlers::Env, lita_handler: true do
 	end
 
 	context "when updating a non-existent environment" do
+		before(:each) do
+			send_command("env update chocolate opsman:1.4")
+		end
+
 		it "should give an error message" do
+			expect(replies.last).to eq("Environment chocolate does not exist")
 		end
 	end
 
@@ -121,7 +127,6 @@ describe Lita::Handlers::Env, lita_handler: true do
 				keys = Environment.all
 				expect(keys).to be_empty
 			end
-
 		end
 	end
 

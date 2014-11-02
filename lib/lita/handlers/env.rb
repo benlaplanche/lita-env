@@ -52,7 +52,12 @@ module Lita
       end
 
       def update(response)
-        response.reply(t("updated", name: response.matches[0][0]))
+        key, value = split_message(response)
+        if Environment.exists?(key)
+          response.reply(t("updated", name: response.matches[0][0]))
+        else
+          response.reply(t("does_not_exist", name: key))
+        end
       end
 
       def remove(response)
