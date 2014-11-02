@@ -16,8 +16,9 @@ describe Lita::Handlers::Env, lita_handler: true do
 	it { routes_command("env list").to(:list) }
 	it { routes_command("env clear").to(:clear) }
 	it { routes_command("env please clear").to(:please_clear) }
-	it { routes_command("env target-opsman #{opsman_target}").to(:target) }
-	it { routes_command("env target-cf #{cf_target}").to(:target)}
+	it { routes_command("env list-targets").to(:list_targets) }
+	it { routes_command("env set-target #{opsman_data}").to(:target) }
+	it { routes_command("env set-target #{cf_data}").to(:target)}
 
 	before(:each) do
 		send_command("env add #{environment} #{opsman_data} #{cf_data}")
@@ -130,30 +131,31 @@ describe Lita::Handlers::Env, lita_handler: true do
 		end
 	end
 
-	describe "updates OpsManager target" do
-
-		it "and shows the correct message" do
-			send_command("env target-opsman 1.3")
-			expect(replies.last).to eq("Config for target-opsman target value set to 1.3")
+	context "when setting targets" do
+		before(:each) do
+			send_command("env set-target #{opsman_data}")
 		end
 
-		it "and updates Redis" do
-			send_command("env target-opsman 1.3")
-			expect(Environment.read("target-opsman")).to eq("1.3")
+		context "for an attribute" do
+			it "should return the correct message" do
+				expect(replies.last).to eq("opsman target value set to 1.3")
+			end
+
+			it "should store the correct value in Redis" do
+				expect(Environment.read("target-opsman")).to eq("1.3")
+			end
 		end
 
+		context "and listing them" do
+			before(:each) do
+				send_command("env set-target #{cf_data}")
+			end
+
+			it "should return the correct message" do
+				send_command("env list-targets")
+				expect(replies.last).to eq("")
+			end
+		end
 	end
 
-	describe "updates CloudFoundry target" do
-
-		it "and shows the correct message" do
-			send_command("env target-cf 1.3")
-			expect(replies.last).to eq("Config for target-cf target value set to 1.3")
-		end
-
-		it "and updates Redis" do
-			send_command("env target-cf 1.3")
-			expect(Environment.read("target-cf")).to eq("1.3")
-		end
-	end
 end

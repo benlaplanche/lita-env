@@ -19,6 +19,11 @@ module Lita
         t("help.remove_key") => t("help.remove_value")
       }
 
+      # env list-targets
+      route /env\s+list-targets/i, :list_targets, command: true, help: {
+        t("help.list_targets_key") => t("help.list_targets_value")
+      }
+
       # env list
       route /env\s+list/i, :list, command: true, help: {
         t("help.list_key") => t("help.list_value")
@@ -34,13 +39,8 @@ module Lita
         t("help.please_clear_key") => t("help.please_clear_value")
       }
 
-      # env target-opsman 1.3
-      route /env\s+target-opsman/i, :target, command: true, help: {
-        t("help.target_key") => t("help.target_value")
-      }
-
-      # env target-cf 1.3
-      route /env\s+target-cf\s+(.+)/i, :target, command: true, help: {
+      # env set-target opsman:1.3
+      route /env\s+set-target\s+(.+)/i, :target, command: true, help: {
         t("help.target_key") => t("help.target_value")
       }
 
@@ -70,7 +70,7 @@ module Lita
         end
       end
 
-      def list
+      def list(response)
       end
 
       def clear(response)
@@ -83,11 +83,17 @@ module Lita
       end
 
       def target(response)
-        key = response.args[0]
-        value = response.args[1]
+        attribute = response.args[1]
+        original_key,value = attribute.split(":")
+
+        key = "target-" + original_key
 
         Environment.create(key,value)
-        response.reply(t("set_target", key: key, value: value))
+        response.reply(t("set_target", key: original_key, value: value))
+      end
+
+      def list_targets(response)
+        # response.reply(t(""))
       end
 
       def format_values_json(value)
